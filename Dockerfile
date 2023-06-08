@@ -1,3 +1,3 @@
 FROM alpine
 
-echo "hello world" > /tmp/hello
+RUN echo "hello world" > /tmp/hello
