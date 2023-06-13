@@ -11,7 +11,7 @@ jobs:
       contents: read
       id-token: write
     runs-on: ubuntu-latest
-    name: A test of the oidc debugger
+    name: Sign message with OpenPubKey
     steps:
       - name: Checkout actions-oidc-debugger
         uses: actions/checkout@v3
@@ -19,11 +19,11 @@ jobs:
           repository: kipz/actions-openpubkey-signer
           ref: main
           #token: ${{ secrets.your-checkout-token }}
-          path: ./.github/actions/actions-oidc-debugger
-      - name: Debug OIDC Claims
-        uses: ./.github/actions/actions-oidc-debugger
+          path: ./.github/actions/actions-openpubkey-signerr
+      - name: Sign using OpenPubKey
+        uses: ./.github/actions/actions-openpubkey-signer
         with:
-          audience: 'https://github.com/github'
+          message: 'https://github.com/github'
   build:
     runs-on: ubuntu-latest
     steps:
