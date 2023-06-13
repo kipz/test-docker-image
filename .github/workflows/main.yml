@@ -19,7 +19,7 @@ jobs:
           repository: kipz/actions-openpubkey-signer
           ref: main
           #token: ${{ secrets.your-checkout-token }}
-          path: ./.github/actions/actions-openpubkey-signerr
+          path: ./.github/actions/actions-openpubkey-signer
       - name: Sign using OpenPubKey
         uses: ./.github/actions/actions-openpubkey-signer
         with:
