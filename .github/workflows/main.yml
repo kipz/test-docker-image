@@ -6,14 +6,14 @@ on:
       - "main"
 
 jobs:
-  oidc_debug_test:
+  open_pub_key_sign:
     permissions:
       contents: read
       id-token: write
     runs-on: ubuntu-latest
     name: Sign message with OpenPubKey
     steps:
-      - name: Checkout actions-oidc-debugger
+      - name: Checkout actions-openpubkey-signer
         uses: actions/checkout@v3
         with:
           repository: kipz/actions-openpubkey-signer
@@ -24,26 +24,26 @@ jobs:
         uses: ./.github/actions/actions-openpubkey-signer
         with:
           message: 'https://github.com/github'
-  build:
-    runs-on: ubuntu-latest
-    steps:
-      -
-        name: Checkout
-        uses: actions/checkout@v3
-      -
-        name: Login to Docker Hub
-        uses: docker/login-action@v2
-        with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
-      -
-        name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
-      -
-        name: Build and push
-        uses: docker/build-push-action@v4
-        with:
-          context: .
-          file: ./Dockerfile
-          push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/test-docker-image:latest
+#   build:
+#     runs-on: ubuntu-latest
+#     steps:
+#       -
+#         name: Checkout
+#         uses: actions/checkout@v3
+#       -
+#         name: Login to Docker Hub
+#         uses: docker/login-action@v2
+#         with:
+#           username: ${{ secrets.DOCKERHUB_USERNAME }}
+#           password: ${{ secrets.DOCKERHUB_TOKEN }}
+#       -
+#         name: Set up Docker Buildx
+#         uses: docker/setup-buildx-action@v2
+#       -
+#         name: Build and push
+#         uses: docker/build-push-action@v4
+#         with:
+#           context: .
+#           file: ./Dockerfile
+#           push: true
+#           tags: ${{ secrets.DOCKERHUB_USERNAME }}/test-docker-image:latest
