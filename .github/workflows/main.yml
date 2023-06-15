@@ -13,17 +13,17 @@ jobs:
     runs-on: ubuntu-latest
     name: Sign message with OpenPubKey
     steps:
-      - name: Checkout actions-openpubkey-signer
+      - name: Checkout actions-oidc-debugger
         uses: actions/checkout@v3
         with:
-          repository: kipz/actions-openpubkey-signer
+          repository: github/actions-oidc-debugger
           ref: main
           #token: ${{ secrets.your-checkout-token }}
-          path: ./.github/actions/actions-openpubkey-signer
-      - name: Sign using OpenPubKey
-        uses: ./.github/actions/actions-openpubkey-signer
+          path: ./.github/actions/actions-oidc-debugger
+      - name: Debug OIDC Claims
+        uses: ./.github/actions/actions-oidc-debugger
         with:
-          message: 'https://github.com/github'
+          audience: 'el-kippo'
   build:
     runs-on: ubuntu-latest
     steps:
