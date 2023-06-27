@@ -1,49 +1,53 @@
-name: build-sign-push
+name: docker-build
 
 on:
   push:
-    branches:
-      - "main"
+    branches: ["main"]
+env:
+  # github.repository as <account>/<repo>
+  IMAGE_NAME: jamescarnegie559/test-docker-image:opk
+  SHA: ${{ github.event.pull_request.head.sha || github.event.after }}
+  DOCKERFILE_PATH: Dockerfile
 
 jobs:
-  open_pub_key_sign:
-    permissions:
-      contents: read
-      id-token: write
-    runs-on: ubuntu-latest
-    name: Sign message with OpenPubKey
-    steps:
-      - name: Checkout actions-oidc-debugger
-        uses: actions/checkout@v3
-        with:
-          repository: github/actions-oidc-debugger
-          ref: main
-          #token: ${{ secrets.your-checkout-token }}
-          path: ./.github/actions/actions-oidc-debugger
-      - name: Debug OIDC Claims
-        uses: ./.github/actions/actions-oidc-debugger
-        with:
-          audience: 'el-kippo'
   build:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+      id-token: write
+
     steps:
-      -
-        name: Checkout
+      - name: Checkout repository
         uses: actions/checkout@v3
-      -
-        name: Login to Docker Hub
-        uses: docker/login-action@v2
         with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
-      -
-        name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
-      -
-        name: Build and push
-        uses: docker/build-push-action@v4
+          ref: ${{ env.SHA }}
+
+      - name: Setup Docker buildx
+        uses: kipz/setup-buildx-action@3f7c025d8c3bcb72be4a5ae6fdccff4e0b5fea26
+        #uses: docker/setup-buildx-action@v2.7.0
+
+      - name: Log into registry
+        if: ${{ github.event_name == 'push' || github.event.inputs.push }}
+        uses: docker/login-action@v2.1.0
+        with:
+          username: dockerbuildbot
+          password: ${{ secrets.DOCKERBUILDBOT_WRITE_PAT }}
+
+      - name: Extract Docker metadata
+        id: meta
+        uses: docker/metadata-action@v4.4.0
+        with:
+          images: ${{ env.IMAGE_NAME }}
+
+      - name: Build and push Docker image on push
+        id: build-and-push
+        uses: docker/build-push-action@v4.0.0
         with:
           context: .
-          file: ./Dockerfile
           push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/test-docker-image:latest
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          platforms: "linux/amd64"
+          sbom: true
+          provenance: true
