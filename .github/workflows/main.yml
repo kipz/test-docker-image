@@ -24,7 +24,7 @@ jobs:
           ref: ${{ env.SHA }}
 
       - name: Setup Docker buildx
-        uses: kipz/setup-buildx-action@3f7c025d8c3bcb72be4a5ae6fdccff4e0b5fea26
+        uses: kipz/setup-buildx-action@761daedd373e27d60daf4da735a83ace95094c89
         #uses: docker/setup-buildx-action@v2.7.0
 
       - name: Log into registry
